@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>ProgressBarDemo</title>
+		
+		<style type="text/css">
+			.content{
+				margin:0 auto; 
+				width:400px; 
+				text-align:center
+			}
+			
+			.bar{
+				 position:relative;
+				 width:400px;
+				 height:40px;
+				 background-color:#F0EFEF;
+				 border:1px solid #cccccc;
+				 padding:0px;
+				 font-size:13px;
+				 font-weight:700;	
+				 margin:5px 0;	
+			 }
+			 
+			.bar .blue,.red{
+				 position:relative;
+				 height:40px;
+				 text-align:center;
+				 color:#ffffff;
+				 line-height:30px;
+				 font-family:Arial;
+				 display:block;
+			}
+			
+			.bar .pbTxt{
+				float:left;
+				line-height:40px; 
+				position:absolute; 
+				z-index:1000
+			}
+			
+			.bar .blue{background-color:#3399CC;}
+			
+			.bar .red{background-color:red;}
+		</style>
+		
+		<script type="text/javascript" src="js/json2.js"></script>
+		<script type="text/javascript" src="js/jquery-min.js"></script>
+		<script type="text/javascript" src="js/underscore-min.js"></script>
+		<script type="text/javascript" src="js/backbone-min.js"></script>
+		
+		<script type="text/javascript">
+			$(function() {
+				// Create Model  
+                var Bar = Backbone.Model.extend({
+                        defaults: {
+                            "progress": 50
+                        }
+                });
+				
+                // Create Model Collection  
+                var Bars = Backbone.Collection.extend({
+                    model: Bar
+                });
+                                
+				// Create View  
+                var View = Backbone.View.extend({
+					el: $("body"),
+					barIndex: 0,
+					initialize: function() {
+						barIndex = 0;
+						$("#selectedBar").val(barIndex);
+					},
+					events : {
+						"click #minus25" : "minus25",
+						"click #minus10" : "minus10",
+						"click #plus10" : "plus10",
+						"click #plus25" : "plus25",
+						"change #selectedBar" : "selectBar",
+					},
+					
+					update:function(val){
+						var selectedPB = $("#selectedBar").val();
+						var pb = $("#pb"+selectedPB);
+						var txt = $("#txt"+selectedPB);
+						var begin, end, txtProgress;
+						begin = bars.models[barIndex].get("progress");
+						end = begin + val;
+						txtProgress = end;
+						if (end <0){
+							end = 0;
+							txtProgress = 0; 	//if progress<0, display 0%
+						}else if(end > 100){
+							end = 100;
+						}								
+						
+						var progress = end + "%";
+						pb.animate({								
+							width:progress
+						  },(val<0 ? -val:val)*50);
+						txt.text(txtProgress + "%");
+
+						if(txtProgress > 100){
+							pb.attr("class","red");
+						}else{
+							pb.attr("class","blue");
+						}
+						
+						bars.models[barIndex].set("progress",txtProgress);
+					},
+					
+					minus25:function(){
+						this.update(-25);
+					},
+					minus10:function(){
+						this.update(-10);
+					},
+					plus10:function(){
+						this.update(10);
+					},
+					plus25:function(){
+						this.update(25);
+					},
+					selectBar : function(){
+						var selectedPB = $("#selectedBar").val();
+						barIndex = selectedPB;
+					}
+						
+                });
+               
+				//instantiate
+				var bars = new Bars();
+				var bar1 = new Bar({"progress":25});
+				var bar2 = new Bar({"progress":50});
+				var bar3 = new Bar({"progress":75});
+				bars.add(bar1);
+				bars.add(bar2);
+				bars.add(bar3);
+				var app = new View({
+					collection : bars
+				});
+			});
+			
+		</script>
+	</head>
+	<body>
+		<div class="content">
+			<h1>Progress Bars Demo</h1>				
+			<div id="bars">
+				<div class="bar"><span id="txt0" class="pbTxt">25%</span><span id="pb0" class="blue" style="width:25%"></span></div>
+				<div class="bar"><span id="txt1" class="pbTxt">50%</span><span id="pb1" class="blue" style="width:50%"></span></div>
+				<div class="bar"><span id="txt2" class="pbTxt">75%</span><span id="pb2" class="blue" style="width:75%"></span></div>
+			</div>
+			<br>
+			<table>
+				<tr>
+					<td>
+						<select id="selectedBar">
+							<option name="pb1" value="0">#progress1</option>
+							<option name="pb2" value="1">#progress2</option>
+							<option name="pb3" value="2">#progress3</option>
+						</select>
+					</td>
+					<td>
+						<input type="button" id="minus25" value="-25" />
+					</td>
+					<td>
+						<input type="button" id="minus10" value="-10" />
+					</td>
+					<td>
+						<input type="button" id="plus10" value="+10" />
+					</td>
+					<td>
+						<input type="button" id="plus25" value="+25" />
+					</td>
+				</tr>
+			<table>
+		</div>
+	</body>
+</html>
