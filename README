@@ -1,1 +1,10 @@
 Create Progress Bars Demo
+Feature overview:
+1.Multiple bars
+2.One set of controls that can control each bar on the fly
+3.Can't go under 0
+4.Can go over 100, but limit the bar itself and change its colour
+5.Display usage amount, centred
+6.Animate the bar change
+7.Linear gradient for the bar
+8.Responsive solution: testing it on mobile, tablet, etc. Getting it working nicely.
