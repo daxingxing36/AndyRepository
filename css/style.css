@@ -1,7 +1,12 @@
 .content{
 	margin:0 auto; 
-	width:30%; 	
+	width:30%; 		 
 	text-align:center
+}
+@media screen and (max-width: 500px) {
+	.content{		
+		width:80%; 	
+	}
 }
 h1 { font-size: 1.5em; } 
 .bar{
